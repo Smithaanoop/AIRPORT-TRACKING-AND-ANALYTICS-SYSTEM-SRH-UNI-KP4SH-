@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport Tracking & Analytics System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>✈️ Airport Tracking & Analytics System</h1>
+            <p class="subtitle">Real-time Flight Monitoring & Safety Dashboard</p>
+        </header>
+
+        <main>
+            <div class="welcome-section">
+                <h2>Welcome to the Airport Management System</h2>
+                <p>This system provides comprehensive real-time monitoring and analytics for airport operations.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Live Flight Monitor</h3>
+                    <p>Track all active flights and gate assignments in real-time</p>
+                    <a href="/dashboard" class="btn">Open Dashboard</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">📈</div>
+                    <h3>Airport KPIs</h3>
+                    <p>Monitor performance metrics, delays, and efficiency statistics</p>
+                    <a href="/kpi" class="btn">View KPIs</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">⚠️</div>
+                    <h3>Collision Detection</h3>
+                    <p>Real-time alerts for potential mid-air collision risks</p>
+                    <a href="/collision" class="btn">View Alerts</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">📉</div>
+                    <h3>Altitude Monitoring</h3>
+                    <p>Detect aircraft flying below safe altitude thresholds</p>
+                    <a href="/altitude" class="btn">Monitor Altitude</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🔍</div>
+                    <h3>Passenger Information</h3>
+                    <p>Search flights and check status, gates, and delays</p>
+                    <a href="/passenger" class="btn">Search Flights</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">📜</div>
+                    <h3>Flight History</h3>
+                    <p>View historical data and generate performance reports</p>
+                    <a href="/history" class="btn">View History</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">🎬</div>
+                    <h3>Flight Replay</h3>
+                    <p>Replay and analyze historical flight paths</p>
+                    <a href="/replay" class="btn">Replay Flights</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon">💚</div>
+                    <h3>System Health</h3>
+                    <p>Check database connections and system status</p>
+                    <a href="/health" class="btn" target="_blank">Health Check</a>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>System Architecture</h2>
+                <div class="architecture-info">
+                    <div class="arch-item">
+                        <h4>📦 Redis</h4>
+                        <p>Real-time flight positions and alerts</p>
+                    </div>
+                    <div class="arch-item">
+                        <h4>🔗 Neo4j</h4>
+                        <p>Flight-gate relationships and airport zones</p>
+                    </div>
+                    <div class="arch-item">
+                        <h4>📚 MongoDB</h4>
+                        <p>Flight schedules and historical data</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h2>Data Sources</h2>
+                <ul>
+                    <li><strong>OpenSky Network:</strong> Live aircraft positions (Free API)</li>
+                    <li><strong>AviationStack:</strong> Flight schedules and details</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>SRH University - Airport Tracking & Analytics System</p>
+            <p>Student Project 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        // Check system health on page load
+        fetch('/health')
+            .then(res => res.json())
+            .then(data => {
+                console.log('System Health:', data);
+                if (data.status === 'ok') {
+                    console.log('✅ All systems operational');
+                }
+            })
+            .catch(err => console.error('Health check failed:', err));
+    </script>
+</body>
+
+</html>

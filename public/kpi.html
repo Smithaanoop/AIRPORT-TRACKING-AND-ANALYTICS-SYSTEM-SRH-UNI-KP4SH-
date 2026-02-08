@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airport KPIs - Airport Tracking System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 Airport Performance KPIs</h1>
+            <p class="subtitle">Real-time Performance Metrics</p>
+        </header>
+
+        <main>
+            <div class="dashboard-header">
+                <a href="/" class="btn">← Back to Home</a>
+                <button onclick="refreshData()" class="btn">🔄 Refresh</button>
+            </div>
+
+            <div class="stats-grid" id="kpi-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-flights">-</div>
+                    <div class="stat-label">Total Flights Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="on-time-pct">-%</div>
+                    <div class="stat-label">On-Time Performance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="delayed-flights">-</div>
+                    <div class="stat-label">Delayed Flights</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="cancelled-flights">-</div>
+                    <div class="stat-label">Cancelled Flights</div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>Delay Statistics</h2>
+                <div class="architecture-info" id="delay-stats">
+                    <div class="arch-item">
+                        <h4>Average Delay</h4>
+                        <p id="avg-delay">- minutes</p>
+                    </div>
+                    <div class="arch-item">
+                        <h4>Maximum Delay</h4>
+                        <p id="max-delay">- minutes</p>
+                    </div>
+                    <div class="arch-item">
+                        <h4>Total Delayed</h4>
+                        <p id="total-delayed">- flights</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function loadKPIs() {
+            try {
+                // Load KPI summary
+                const summaryRes = await fetch('/api/kpi/summary');
+                const summary = await summaryRes.json();
+
+                if (summary.success) {
+                    document.getElementById('total-flights').textContent = summary.data.totalFlights;
+                    document.getElementById('on-time-pct').textContent = summary.data.onTimePercentage + '%';
+                    document.getElementById('delayed-flights').textContent = summary.data.delayedFlights;
+                    document.getElementById('cancelled-flights').textContent = summary.data.cancelledFlights || 0;
+                }
+
+                // Load delay statistics
+                const delayRes = await fetch('/api/kpi/delays');
+                const delays = await delayRes.json();
+
+                if (delays.success) {
+                    document.getElementById('avg-delay').textContent = delays.data.averageDelay + ' minutes';
+                    document.getElementById('max-delay').textContent = delays.data.maximumDelay + ' minutes';
+                    document.getElementById('total-delayed').textContent = delays.data.totalDelayedFlights + ' flights';
+                }
+            } catch (error) {
+                console.error('Error loading KPIs:', error);
+            }
+        }
+
+        function refreshData() {
+            loadKPIs();
+        }
+
+        // Load on page load
+        loadKPIs();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadKPIs, 30000);
+    </script>
+</body>
+
+</html>
