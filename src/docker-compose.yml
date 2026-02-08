@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # Redis - For real-time flight data caching
+  redis:
+    image: redis:7-alpine
+    container_name: airport-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+
+  # MongoDB - For flight schedules and historical data
+  mongodb:
+    image: mongo:7
+    container_name: airport-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: airport123
+      MONGO_INITDB_DATABASE: airport_system
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # Neo4j - For flight-gate relationships
+  neo4j:
+    image: neo4j:5
+    container_name: airport-neo4j
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    environment:
+      NEO4J_AUTH: neo4j/airport123
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_dbms_memory_heap_max__size: 512M
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: [ "CMD", "cypher-shell", "-u", "neo4j", "-p", "airport123", "RETURN 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  mongodb-data:
+  mongodb-config:
+  neo4j-data:
+  neo4j-logs:
+
+
+networks:
+  default:
+    name: airport-network
